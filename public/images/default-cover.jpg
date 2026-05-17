@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#E8F5E9"/>
+  <rect x="0" y="600" width="1200" height="200" fill="#D8F3DC"/>
+  <!-- Simple landscape: sky, ground, leaf icon -->
+  <circle cx="200" cy="150" r="80" fill="#FEF3C7" opacity="0.6"/>
+  <!-- Leaf/plant icon center -->
+  <g transform="translate(540,320)">
+    <path d="M60,0 C60,0 120,60 60,120 C0,60 60,0 60,0Z" fill="#2D6A4F" opacity="0.5"/>
+    <path d="M60,0 C60,0 0,60 60,120 C120,60 60,0 60,0Z" fill="#40916C" opacity="0.4"/>
+    <line x1="60" y1="0" x2="60" y2="160" stroke="#1B4332" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <text x="600" y="560" font-family="Inter,sans-serif" font-size="28" font-weight="600" fill="#2D6A4F" text-anchor="middle" opacity="0.7">Greenvest.co</text>
+</svg>
