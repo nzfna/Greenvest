@@ -96,15 +96,6 @@
                     </div>
                 </div>
 
-                <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1.5rem;">
-                    <input type="checkbox" name="remember" id="remember"
-                           style="width:16px;height:16px;accent-color:#1B4332;"
-                           {{ old('remember') ? 'checked' : '' }}>
-                    <label for="remember" style="font-size:0.875rem;color:#6B7280;cursor:pointer;">
-                        Ingat perangkat ini selama 30 hari
-                    </label>
-                </div>
-
                 <button type="submit" class="btn-primary" :disabled="loading">
                     <span x-show="!loading">MASUK KE SISTEM →</span>
                     <span x-show="loading">Memproses...</span>

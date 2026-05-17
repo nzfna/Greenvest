@@ -23,13 +23,22 @@
             @endforeach
         </div>
 
-        {{-- Literacy bar (mock progress — can be wired to session later) --}}
-        <div class="literacy-bar-wrap">
-            <span class="literacy-bar-label">Literasi Minggu ini</span>
-            <div class="literacy-bar">
-                <div class="literacy-bar-fill" style="width:75%;"></div>
+        {{-- Progress Literasi Minggu Ini (localStorage) --}}
+        <div x-data="literacyWidget()" style="max-width:340px;margin:1.25rem auto 0;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.375rem;">
+                <span style="font-size:0.8125rem;color:#6B7280;" x-text="statusLabel"></span>
+                <span style="font-size:0.9375rem;font-weight:800;color:#0D3B2E;min-width:56px;text-align:right;"
+                      x-text="displayText"></span>
             </div>
-            <span class="literacy-pct">75%</span>
+            <div style="height:7px;background:#E5E7EB;border-radius:999px;overflow:hidden;">
+                <div style="height:100%;border-radius:999px;transition:width 0.6s;"
+                     :style="{ width: animatedPct + '%', background: barColor }"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:0.6875rem;color:#9CA3AF;margin-top:0.375rem;">
+                <span>Baca +1%</span>
+                <span>Komentar +3%</span>
+                <span>Simulasi +2%</span>
+            </div>
         </div>
     </div>
 </div>

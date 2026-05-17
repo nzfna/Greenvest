@@ -16,7 +16,7 @@ class CommentFactory extends Factory
             'content'            => fake()->paragraph(),
             'admin_reply'        => null,
             'replied_at'         => null,
-            'status'             => 'pending',
+            'status'             => 'approved',
             'ip_address'         => fake()->ipv4(),
             'user_agent'         => fake()->userAgent(),
             'device_fingerprint' => hash('sha256', fake()->ipv4() . fake()->userAgent()),

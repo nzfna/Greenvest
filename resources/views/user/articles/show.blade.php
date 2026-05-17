@@ -68,7 +68,7 @@
                     <div x-show="success" x-cloak
                          style="margin-bottom:1rem;padding:0.875rem;background:#D1E7DD;border-radius:10px;font-size:0.875rem;color:#0F5132;display:flex;gap:0.5rem;">
                         <i class="ph ph-check-circle"></i>
-                        Komentar berhasil dikirim dan menunggu moderasi.
+                        Komentar berhasil dikirim! Komentar kamu langsung tampil.
                     </div>
 
                     <div x-show="error" x-cloak
@@ -148,18 +148,34 @@
         {{-- ── Sidebar ── --}}
         <aside class="article-sidebar">
             {{-- Progress widget --}}
-            <div class="sidebar-widget">
-                <div class="sidebar-widget-title">Progres Kursus Anda</div>
-                <div class="progress-bar-wrap">
-                    <span class="progress-label">3 dari 10 modul selesai (30%)</span>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width:30%;"></div>
-                    </div>
+            {{-- Progress Literasi Minggu Ini (localStorage) --}}
+            <div class="sidebar-widget" x-data="literacyWidget()">
+                <div class="sidebar-widget-title">Progress Literasi Minggu Ini</div>
+
+                {{-- Pct display --}}
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+                    <span style="font-size:0.8125rem;color:#6B7280;" x-text="statusLabel"></span>
+                    <span style="font-size:1.125rem;font-weight:800;color:#0D3B2E;" x-text="displayText"></span>
                 </div>
+
+                {{-- Progress bar --}}
+                <div style="height:8px;background:#E5E7EB;border-radius:999px;overflow:hidden;margin-bottom:0.75rem;">
+                    <div style="height:100%;border-radius:999px;transition:width 0.6s ease;"
+                         :style="{ width: animatedPct + '%', background: barColor }"></div>
+                </div>
+
+                {{-- Petunjuk poin --}}
+                <div style="font-size:0.6875rem;color:#9CA3AF;display:flex;flex-direction:column;gap:0.25rem;margin-bottom:0.875rem;">
+                    <span>Baca artikel: <strong style="color:#374151;">+1%</strong></span>
+                    <span>Tulis komentar: <strong style="color:#374151;">+3%</strong></span>
+                    <span>Coba simulasi: <strong style="color:#374151;">+2%</strong></span>
+                </div>
+
                 <a href="{{ route('user.articles.index') }}" class="btn-continue">
-                    Lanjutkan Belajar <i class="ph ph-arrow-right"></i>
+                    Baca Artikel Lain <i class="ph ph-arrow-right"></i>
                 </a>
             </div>
+
 
             {{-- Simulation CTA --}}
             <div class="sidebar-widget">
@@ -189,3 +205,12 @@
 
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    // +1% literacy: artikel ini sudah dibaca
+    document.addEventListener('DOMContentLoaded', function () {
+        window.literacyReadArticle('{{ $article->slug }}');
+    });
+</script>
+@endpush

@@ -90,7 +90,7 @@ test('user dapat mengirim komentar ke artikel', function () {
     $this->assertDatabaseHas('comments', [
         'article_id' => $article->id,
         'user_name'  => 'Budi Hijau',
-        'status'     => 'pending',
+        'status'     => 'approved',
     ]);
 });
 

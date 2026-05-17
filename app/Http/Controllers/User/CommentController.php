@@ -30,7 +30,7 @@ class CommentController extends Controller
             'user_name'          => $request->user_name,
             'user_email'         => $request->user_email,
             'content'            => $request->content,
-            'status'             => 'pending',
+            'status'             => 'approved', // auto-approve, admin tinggal reject/ban kalau toxic
             'ip_address'         => $request->ip(),
             'user_agent'         => $request->userAgent(),
             'device_fingerprint' => $fingerprint,
@@ -39,10 +39,10 @@ class CommentController extends Controller
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Komentar berhasil dikirim dan menunggu moderasi.',
+                'message' => 'Komentar berhasil dikirim!',
             ]);
         }
 
-        return back()->with('success', 'Komentar berhasil dikirim dan menunggu moderasi.');
+        return back()->with('success', 'Komentar berhasil dikirim!');
     }
 }

@@ -62,7 +62,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: url('/images/auth-bg.jpg') center/cover no-repeat;
+  background: url('/images/auth-bg.jpeg') center/cover no-repeat;
   opacity: 0.35;
 }
 
