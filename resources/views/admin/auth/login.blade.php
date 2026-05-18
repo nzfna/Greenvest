@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Admin Login — Greenvest.co</title>
+    <title>GREENVEST.CO - @yield('title', 'Login Admin')</title>
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
     @vite(['resources/css/admin.css', 'resources/js/admin/app.js'])
@@ -39,7 +40,7 @@
 
         {{-- Form --}}
         <div class="auth-form-panel" x-data="{ showPass: false, loading: false }">
-            <h1 style="font-size:1.625rem;font-weight:800;color:#111827;margin-bottom:0.25rem;">Admin Login - Greenvest.co</h1>
+            <h1 style="font-size:1.625rem;font-weight:800;color:#111827;margin-bottom:0.25rem;">@yield('title', 'Login Admin')</h1>
             <p style="font-size:0.875rem;color:#6B7280;margin-bottom:2rem;">Silakan masukkan kredensial Anda untuk mengakses dashboard Greenvest.</p>
 
             @if($errors->has('email'))

@@ -11,10 +11,9 @@ class HomeController extends Controller
     public function index()
     {
         $categories = Category::withCount(['articles' => fn($q) => $q->published()])->get();
-
-        // Featured article (latest published)
-        $featured = Article::with('category')->published()->latest('published_at')->first();
-
+        $featured = \App\Models\Article::where('slug', 'contoh-investasi-hijau')
+            ->where('status', 'published')
+            ->first();
         // Articles grouped by category (3 each)
         $articlesByCategory = $categories->mapWithKeys(fn($cat) => [
             $cat->slug => Article::with('category')

@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Verifikasi OTP — Greenvest.co</title>
+    <title>GREENVEST.CO - @yield('title', 'Verify Admin')</title>
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
     <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
     @vite(['resources/css/admin.css', 'resources/js/admin/app.js'])
 </head>
@@ -14,14 +15,24 @@
 
         {{-- Banner --}}
         <div class="auth-banner">
-            <div class="auth-banner-content">
-                <div class="auth-logo" style="position:absolute;top:2rem;left:2.5rem;">
-                    <div class="auth-logo-icon"><i class="ph ph-leaf" style="color:#D8F3DC;font-size:1rem;"></i></div>
+            <div class="auth-banner-content" style="position:relative; padding-top:8rem; padding-left:0.5rem; padding-bottom:6rem; display:flex; flex-direction:column; justify-content:flex-end; height:100%; box-sizing:border-box;">
+                
+                <div class="auth-logo" style="position:absolute; top:2rem; left:0.5rem;">
+                    <div class="auth-logo-icon">
+                        <i class="ph ph-leaf" style="color:#D8F3DC; font-size:1rem;"></i>
+                    </div>
                     <span class="auth-logo-name">GREENVEST.CO</span>
                 </div>
+
                 <div class="auth-tagline">
-                    <h2>Edukasi Pintar<br><span class="highlight">Investasi Hijau.</span></h2>
-                    <p>Tempat edukasi pintar yang presisi untuk pengelolaan aset lingkungan masa depan. Selamat datang kembali di portal administrasi.</p>
+                    <h2 style="font-size:2rem; line-height:1.2; margin-bottom:1.25rem; color:#fff;">
+                        Edukasi Pintar<br>
+                        <span class="highlight" style="color:#E9C46A;">Investasi Hijau.</span>
+                    </h2>
+                    <p style="font-size:1rem; line-height:1.6; max-width:420px; color:rgba(255,255,255,0.85);">
+                        Tempat edukasi pintar yang presisi untuk pengelolaan aset lingkungan masa depan. 
+                        Selamat datang kembali di portal administrasi.
+                    </p>
                 </div>
             </div>
         </div>

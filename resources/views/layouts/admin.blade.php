@@ -11,12 +11,19 @@
     @vite(['resources/css/admin.css', 'resources/js/admin/app.js'])
     @stack('head')
 </head>
-<body x-data>
+<body x-data="{
+    sidebarOpen: localStorage.getItem('gv_sidebar') !== 'closed',
+    toggleSidebar() {
+        this.sidebarOpen = !this.sidebarOpen;
+        localStorage.setItem('gv_sidebar', this.sidebarOpen ? 'open' : 'closed');
+    }
+}">
+</body>
 
 <div class="admin-layout">
 
     {{-- ── Sidebar ── --}}
-    <aside class="sidebar">
+    <aside class="sidebar" :class="{ 'collapsed': !sidebarOpen }">
         <div class="sidebar-logo">
             <div class="sidebar-logo-mark">
                 <i class="ph ph-leaf" style="color:#D8F3DC;font-size:1rem;"></i>
@@ -64,14 +71,32 @@
                 <i class="ph ph-clock-counter-clockwise"></i>
                 Logs
             </a>
+            {{-- Divider --}}
+            <div style="height:1px;background:rgba(255,255,255,0.08);margin:0.5rem 0.875rem;"></div>
+
+            {{-- Logout --}}
+            <form method="POST" action="{{ route('admin.logout') }}">
+                @csrf
+                <button type="submit"
+                        style="width:100%;display:flex;align-items:center;gap:0.75rem;padding:0.6875rem 0.875rem;border-radius:10px;font-size:0.875rem;font-weight:500;color:rgba(239,68,68,0.75);background:none;border:none;cursor:pointer;text-align:left;transition:all 0.15s;"
+                        onmouseover="this.style.color='rgba(239,68,68,1)';this.style.background='rgba(239,68,68,0.08)'"
+                        onmouseout="this.style.color='rgba(239,68,68,0.75)';this.style.background='none'">
+                    <i class="ph ph-sign-out"></i>
+                    Logout
+                </button>
+            </form>
         </div>
     </aside>
 
     {{-- ── Main ── --}}
-    <div class="admin-main">
+    <div class="admin-main" :class="{ 'sidebar-closed': !sidebarOpen }">
 
         {{-- Topbar --}}
         <header class="topbar" x-data="topbarSearch()">
+            <button class="sidebar-toggle" @click="toggleSidebar()">
+                <i class="ph ph-list"></i>
+            </button>
+
             <div class="topbar-search">
                 <i class="ph ph-magnifying-glass topbar-search-icon"></i>
                 <input
@@ -94,7 +119,7 @@
                         </a>
                     </template>
                 </div>
-            </div>
+            </div>          
 
             <div class="topbar-admin">
                 <span class="topbar-admin-name">{{ auth()->user()->name }}</span>

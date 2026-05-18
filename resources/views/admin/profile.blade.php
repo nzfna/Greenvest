@@ -105,7 +105,7 @@
 </div>
 
 {{-- Save / Cancel buttons (full row) --}}
-<div style="display:flex;align-items:center;justify-content:flex-end;gap:1rem;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid #F3F4F6;">
+<div style="display:flex;align-items:center;justify-content:flex-end;gap:1rem;margin-top:1rem;padding-top:1.25rem;border-top:1px solid #F3F4F6;">
     <button type="button"
             style="font-size:0.875rem;font-weight:600;color:#6B7280;background:none;border:none;cursor:pointer;text-decoration:underline;"
             @click="document.getElementById('admin-name').value = '{{ $admin->name }}';['current-password','new-password','confirm-password'].forEach(id=>document.getElementById(id).value='')">
@@ -121,18 +121,5 @@
         <span x-show="!saving">SIMPAN PERUBAHAN</span>
         <span x-show="saving">Menyimpan...</span>
     </button>
-</div>
-
-{{-- Logout (bottom) --}}
-<div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid #F3F4F6;">
-    <form method="POST" action="{{ route('admin.logout') }}">
-        @csrf
-        <button type="submit"
-                style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.625rem 1.25rem;background:#FEF2F2;color:#EF4444;font-size:0.875rem;font-weight:600;border:1px solid #FECACA;border-radius:10px;cursor:pointer;">
-            <i class="ph ph-sign-out"></i> Logout dari sistem
-        </button>
-    </form>
-</div>
-
 </div>
 @endsection

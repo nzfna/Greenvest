@@ -34,7 +34,7 @@
 
             {{-- Cover --}}
             @if($article->cover_image)
-            <img src="{{ $article->cover_url }}" alt="{{ $article->title }}" class="article-hero-img">
+                <img src="{{ $article->cover_url }}" alt="{{ $article->title }}" class="article-hero-img">
             @endif
 
             {{-- Content --}}

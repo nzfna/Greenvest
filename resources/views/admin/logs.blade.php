@@ -6,7 +6,7 @@
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
     <h1 class="page-title">Riwayat Aktivitas</h1>
     <div style="display:flex;gap:0.625rem;">
-        <form method="GET" action="{{ route('admin.logs.index') }}"
+        <form method="GET" action="{{ route('admin.logs') }}"
               style="display:flex;gap:0.5rem;align-items:center;">
             <select name="action"
                     style="padding:0.5rem 0.875rem;background:#fff;border:1.5px solid #E5E7EB;border-radius:8px;font-size:0.875rem;outline:none;cursor:pointer;">
