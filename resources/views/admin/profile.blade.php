@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Profil Admin')
+@section('title', 'Profil')
 
 @section('content')
 <div x-data="profilePage()">

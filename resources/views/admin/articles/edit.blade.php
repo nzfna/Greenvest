@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Sunting Artikel')
+@section('title', 'Edit Artikel')
 
 @section('content')
 <div x-data="articleEditor(`{!! addslashes($article->content) !!}`)">

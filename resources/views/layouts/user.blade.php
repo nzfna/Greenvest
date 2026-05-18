@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>GREENVEST.CO - @yield('title', 'Beranda')</title>
     <meta name="description" content="@yield('meta_desc', 'Greenvest adalah platform edukasi investasi hijau terpercaya di Indonesia.')">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
     @vite(['resources/css/user.css', 'resources/js/user/app.js'])

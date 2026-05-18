@@ -1,5 +1,5 @@
 @extends('layouts.user')
-@section('title', 'Greenvest — Edukasi Investasi Hijau')
+@section('title', 'Beranda')
 @section('meta_desc', 'Platform edukasi investasi hijau terpercaya di Indonesia. Pelajari Green Bonds, Energi Surya, dan ESG.')
 
 @section('content')

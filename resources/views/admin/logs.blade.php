@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Riwayat Aktivitas')
+@section('title', 'Log Aktivitas')
 
 @section('content')
 <div style="margin-bottom:0.25rem;" class="section-label">ARCHIVAL RECORDS</div>

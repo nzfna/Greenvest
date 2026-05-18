@@ -1,5 +1,5 @@
 @extends('layouts.user')
-@section('title', 'Simulasi Investasi — Greenvest')
+@section('title', 'Simulasi Investasi')
 
 @section('content')
 <div class="simulation-page">
