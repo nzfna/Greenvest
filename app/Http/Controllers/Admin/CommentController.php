@@ -63,69 +63,53 @@ class CommentController extends Controller
         return response()->json(['success' => true, 'message' => 'Komentar ditolak.']);
     }
 
-    public function shadowban(int $id)
+
+
+
+
+    public function deviceBan(int $id)
     {
         $comment = Comment::findOrFail($id);
-        $comment->update(['status' => 'shadowbanned']);
 
-        ActivityLogService::log('shadowban', 'comment', $id,
-            "Shadowban user {$comment->user_name}");
-
-        return response()->json(['success' => true, 'message' => 'User di-shadowban.']);
-    }
-
-    public function mute(int $id)
-    {
-        $comment = Comment::findOrFail($id);
-        // Mute = temporary shadowban (30 days)
-        $comment->update(['status' => 'shadowbanned']);
-
-        if ($comment->device_fingerprint) {
-            DeviceBan::updateOrCreate(
-                ['device_fingerprint' => $comment->device_fingerprint],
-                [
-                    'ip_address' => $comment->ip_address,
-                    'reason'     => 'Muted by admin',
-                    'banned_at'  => now(),
-                    'expires_at' => now()->addDays(30),
-                ]
-            );
-        }
-
-        ActivityLogService::log('shadowban', 'comment', $id,
-            "Mute user {$comment->user_name} (30 hari)");
-
-        return response()->json(['success' => true, 'message' => 'User di-mute selama 30 hari.']);
-    }
-
-    public function blockIp(int $id)
-    {
-        $comment = Comment::findOrFail($id);
+        $fingerprint = $comment->device_fingerprint
+            ?? hash('sha256', $comment->ip_address . '|' . $comment->user_agent);
 
         DeviceBan::updateOrCreate(
-            ['device_fingerprint' => $comment->device_fingerprint ?? hash('sha256', $comment->ip_address)],
+            ['device_fingerprint' => $fingerprint],
             [
                 'ip_address' => $comment->ip_address,
-                'reason'     => 'Blocked by admin',
+                'reason'     => 'Device Ban by admin',
                 'banned_at'  => now(),
-                'expires_at' => null, // permanent
+                'expires_at' => null, // permanen
             ]
         );
 
-        ActivityLogService::log('block_ip', 'comment', $id,
-            "Block IP: {$comment->ip_address}");
+        // Update status komentar jadi rejected
+        $comment->update(['status' => 'rejected']);
 
-        return response()->json(['success' => true, 'message' => 'IP berhasil diblokir.']);
+        ActivityLogService::log('device_ban', 'comment', $id,
+            "Device Ban: user={$comment->user_name} fp={$fingerprint}");
+
+        return response()->json(['success' => true, 'message' => 'Perangkat berhasil di-ban permanen.']);
     }
 
-    public function flag(int $id)
+    public function undeviceBan(int $id)
     {
         $comment = Comment::findOrFail($id);
 
-        ActivityLogService::log('flag', 'comment', $id,
-            "Flag komentar dari {$comment->user_name}");
+        $fingerprint = $comment->device_fingerprint
+            ?? hash('sha256', $comment->ip_address . '|' . $comment->user_agent);
 
-        return response()->json(['success' => true, 'message' => 'Komentar di-flag.']);
+        // Hapus ban dari device_bans
+        DeviceBan::where('device_fingerprint', $fingerprint)->delete();
+
+        // Kembalikan status komentar jadi approved
+        $comment->update(['status' => 'approved']);
+
+        ActivityLogService::log('unban', 'comment', $id,
+            "Unban device: user={$comment->user_name} fp={$fingerprint}");
+
+        return response()->json(['success' => true, 'message' => 'Device ban berhasil dicabut.']);
     }
 
     public function reply(Request $request, int $id)

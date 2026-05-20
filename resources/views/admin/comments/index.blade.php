@@ -34,10 +34,9 @@
         <label style="display:block;font-size:0.75rem;font-weight:600;color:#6B7280;margin-bottom:0.375rem;">STATUS</label>
         <select name="status" style="width:100%;padding:0.5625rem 0.875rem;background:#fff;border:1.5px solid #E5E7EB;border-radius:10px;font-size:0.875rem;outline:none;cursor:pointer;">
             <option value="">Semua Status</option>
-            <option value="pending"     {{ request('status') === 'pending'     ? 'selected' : '' }}>Pending</option>
-            <option value="approved"    {{ request('status') === 'approved'    ? 'selected' : '' }}>Approved</option>
-            <option value="rejected"    {{ request('status') === 'rejected'    ? 'selected' : '' }}>Rejected</option>
-            <option value="shadowbanned"{{ request('status') === 'shadowbanned'? 'selected' : '' }}>Shadowban</option>
+            <option value="pending"  {{ request('status') === 'pending'  ? 'selected' : '' }}>Pending</option>
+            <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>Approved</option>
+            <option value="rejected" {{ request('status') === 'rejected' ? 'selected' : '' }}>Rejected</option>
         </select>
     </div>
     <div style="min-width:160px;">
@@ -192,20 +191,16 @@
                 <i class="ph ph-check-circle"></i> Approve
             </button>
             <button class="btn-reject" @click="doAction('reject')" :disabled="loading">
-                <i class="ph ph-trash"></i> Reject
+                <i class="ph ph-x-circle"></i> Reject
             </button>
-            <div style="margin-left:auto;display:flex;gap:0.25rem;">
-                <button class="btn-text-action" @click="doAction('shadowban')">
-                    <i class="ph ph-eye-slash"></i> SHADOWBAN
+            <div style="margin-left:auto;display:flex;gap:0.5rem;">
+                <button class="btn-text-action danger" @click="doAction('device-ban')" :disabled="loading"
+                        style="background:#FEF2F2;color:#EF4444;border:1px solid #FECACA;border-radius:8px;padding:0.375rem 0.75rem;">
+                    <i class="ph ph-prohibit"></i> Device Ban
                 </button>
-                <button class="btn-text-action" @click="doAction('mute')">
-                    <i class="ph ph-speaker-slash"></i> MUTE
-                </button>
-                <button class="btn-text-action" @click="doAction('block-ip')">
-                    <i class="ph ph-shield-slash"></i> BLOCK IP
-                </button>
-                <button class="btn-text-action danger" @click="doAction('flag')">
-                    <i class="ph ph-flag"></i> FLAG
+                <button class="btn-text-action" @click="doAction('undevice-ban')" :disabled="loading"
+                        style="background:#F0FDF4;color:#16A34A;border:1px solid #BBF7D0;border-radius:8px;padding:0.375rem 0.75rem;">
+                    <i class="ph ph-shield-check"></i> Undevice Ban
                 </button>
             </div>
         </div>

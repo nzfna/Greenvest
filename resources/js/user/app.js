@@ -205,8 +205,15 @@ Alpine.data('commentForm', (slug) => ({
     async submit() {
         this.loading = true; this.error = ''; this.errors = {};
         try {
+            // Ambil device fingerprint (unik per perangkat, bukan per IP)
+            const deviceFp = await getDeviceFingerprint();
+
             await axios.post(`/artikel/${slug}/komentar`, {
-                user_name: this.name, user_email: this.email, content: this.content, _token: getCsrf(),
+                user_name:  this.name,
+                user_email: this.email,
+                content:    this.content,
+                _token:     getCsrf(),
+                _device_fp: deviceFp,
             });
             this.success = true; this.name = ''; this.email = ''; this.content = '';
             window.literacyComment(slug); // +3% literacy
@@ -223,5 +230,128 @@ Alpine.data('shareBar', () => ({
     copied: false,
     copy() { navigator.clipboard.writeText(window.location.href); this.copied = true; setTimeout(() => { this.copied = false; }, 2000); },
 }));
+
+
+// ══════════════════════════════════════════════════════════════════
+// DEVICE FINGERPRINTING
+// Mengumpulkan karakteristik browser/perangkat yang unik.
+// Tidak menggunakan IP address — aman untuk pengguna satu jaringan.
+//
+// Sinyal yang dikumpulkan:
+//   - User Agent (browser + OS + versi)
+//   - Resolusi layar + color depth
+//   - Timezone
+//   - Bahasa browser
+//   - Jumlah CPU core
+//   - RAM device (jika tersedia)
+//   - Hardware concurrency
+//   - Touch support
+//   - Canvas fingerprint (rendering unik per GPU/driver)
+//   - WebGL vendor + renderer
+//   - Installed fonts (sample)
+//   - Do Not Track setting
+// ══════════════════════════════════════════════════════════════════
+
+async function getCanvasFingerprint() {
+    try {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 200; canvas.height = 50;
+        ctx.textBaseline = 'top';
+        ctx.font = '14px Arial';
+        ctx.fillStyle = '#f60';
+        ctx.fillRect(125, 1, 62, 20);
+        ctx.fillStyle = '#069';
+        ctx.fillText('Greenvest🌿', 2, 15);
+        ctx.fillStyle = 'rgba(102,204,0,0.7)';
+        ctx.fillText('Greenvest🌿', 4, 17);
+        return canvas.toDataURL();
+    } catch { return ''; }
+}
+
+function getWebGLInfo() {
+    try {
+        const canvas = document.createElement('canvas');
+        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        if (!gl) return '';
+        const ext = gl.getExtension('WEBGL_debug_renderer_info');
+        if (!ext) return gl.getParameter(gl.RENDERER);
+        return [
+            gl.getParameter(ext.UNMASKED_VENDOR_WEBGL),
+            gl.getParameter(ext.UNMASKED_RENDERER_WEBGL),
+        ].join('|');
+    } catch { return ''; }
+}
+
+async function hashString(str) {
+    try {
+        const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    } catch {
+        // Fallback simple hash
+        let h = 0;
+        for (let i = 0; i < str.length; i++) {
+            h = ((h << 5) - h) + str.charCodeAt(i);
+            h |= 0;
+        }
+        return Math.abs(h).toString(16).padStart(64, '0');
+    }
+}
+
+let _cachedFingerprint = null;
+
+async function getDeviceFingerprint() {
+    if (_cachedFingerprint) return _cachedFingerprint;
+
+    const canvas   = await getCanvasFingerprint();
+    const webgl    = getWebGLInfo();
+
+    const signals = [
+        navigator.userAgent,
+        navigator.language || navigator.userLanguage || '',
+        navigator.languages ? navigator.languages.join(',') : '',
+        String(screen.width) + 'x' + String(screen.height),
+        String(screen.colorDepth),
+        String(screen.pixelDepth || ''),
+        Intl.DateTimeFormat().resolvedOptions().timeZone,
+        String(navigator.hardwareConcurrency || ''),
+        String(navigator.deviceMemory || ''),
+        String(navigator.maxTouchPoints || '0'),
+        navigator.doNotTrack || '',
+        String(window.devicePixelRatio || '1'),
+        canvas,
+        webgl,
+        navigator.platform || '',
+        String(!!window.indexedDB),
+        String(!!window.sessionStorage),
+        String(!!window.localStorage),
+        String(typeof window.ontouchstart !== 'undefined'),
+    ].join('###');
+
+    _cachedFingerprint = await hashString(signals);
+    return _cachedFingerprint;
+}
+
+// Inject fingerprint ke semua form komentar secara otomatis
+async function injectFingerprint() {
+    const fp = await getDeviceFingerprint();
+    document.querySelectorAll('form[data-fp-form]').forEach(form => {
+        let input = form.querySelector('input[name="_device_fp"]');
+        if (!input) {
+            input = document.createElement('input');
+            input.type  = 'hidden';
+            input.name  = '_device_fp';
+            form.appendChild(input);
+        }
+        input.value = fp;
+    });
+    return fp;
+}
+
+// Jalankan saat DOM ready
+document.addEventListener('DOMContentLoaded', () => { injectFingerprint(); });
+
+// Export untuk dipakai Alpine commentForm
+window.getDeviceFingerprint = getDeviceFingerprint;
 
 Alpine.start();

@@ -23,38 +23,43 @@ Route::get('/artikel/{slug}', [UserArticleController::class, 'show'])->name('use
 Route::get('/simulasi', [SimulationController::class, 'index'])->name('user.simulation');
 Route::post('/simulasi/hitung', [SimulationController::class, 'calculate'])->name('user.simulation.calculate');
 
+// Native Comment (with CheckBanned middleware)
 Route::post('/artikel/{slug}/komentar', [UserCommentController::class, 'store'])
     ->middleware('check.banned')
     ->name('user.comments.store');
 
 /*
 |--------------------------------------------------------------------------
-| ADMIN ROUTES
+| ADMIN AUTH ROUTES (Guest only)
 |--------------------------------------------------------------------------
 */
 Route::prefix('admin')->name('admin.')->group(function () {
-
-    // /admin → redirect otomatis
+    // /admin → redirect ke login atau dashboard
     Route::get('/', function () {
         return auth()->check()
             ? redirect()->route('admin.dashboard')
             : redirect()->route('admin.login');
     });
-
-    // Auth routes (tanpa guest middleware)
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/lupa-password', [AuthController::class, 'showForgot'])->name('forgot');
     Route::post('/lupa-password', [AuthController::class, 'sendResetCode']);
     Route::get('/verifikasi', [AuthController::class, 'showVerify'])->name('verify');
     Route::post('/verifikasi', [AuthController::class, 'verifyCode']);
+
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Protected routes
+    /*
+    |--------------------------------------------------------------------------
+    | ADMIN ROUTES (Authenticated)
+    |--------------------------------------------------------------------------
+    */
     Route::middleware(['admin'])->group(function () {
 
+        // Dashboard
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+        // Articles CRUD
         Route::get('/artikel', [AdminArticleController::class, 'index'])->name('articles.index');
         Route::get('/artikel/tambah', [AdminArticleController::class, 'create'])->name('articles.create');
         Route::post('/artikel', [AdminArticleController::class, 'store'])->name('articles.store');
@@ -63,16 +68,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/artikel/{article}', [AdminArticleController::class, 'destroy'])->name('articles.destroy');
         Route::get('/artikel/{slug}/preview', [AdminArticleController::class, 'preview'])->name('articles.preview');
 
+        // Comments Moderation
         Route::get('/komentar', [AdminCommentController::class, 'index'])->name('comments.index');
         Route::post('/komentar/{id}/approve', [AdminCommentController::class, 'approve'])->name('comments.approve');
         Route::post('/komentar/{id}/reject', [AdminCommentController::class, 'reject'])->name('comments.reject');
-        Route::post('/komentar/{id}/shadowban', [AdminCommentController::class, 'shadowban'])->name('comments.shadowban');
-        Route::post('/komentar/{id}/mute', [AdminCommentController::class, 'mute'])->name('comments.mute');
-        Route::post('/komentar/{id}/block-ip', [AdminCommentController::class, 'blockIp'])->name('comments.block-ip');
-        Route::post('/komentar/{id}/flag', [AdminCommentController::class, 'flag'])->name('comments.flag');
+        Route::post('/komentar/{id}/device-ban', [AdminCommentController::class, 'deviceBan'])->name('comments.device-ban');
+        Route::post('/komentar/{id}/undevice-ban', [AdminCommentController::class, 'undeviceBan'])->name('comments.undevice-ban');
         Route::post('/komentar/{id}/reply', [AdminCommentController::class, 'reply'])->name('comments.reply');
         Route::get('/komentar/export', [AdminCommentController::class, 'exportLog'])->name('comments.export');
 
+        // Profile
         Route::get('/profil', [ProfileController::class, 'index'])->name('profile');
         Route::put('/profil', [ProfileController::class, 'update'])->name('profile.update');
         Route::put('/profil/password', [ProfileController::class, 'changePassword'])->name('profile.password');
@@ -81,6 +86,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/profil/email/request', [ProfileController::class, 'requestEmailChange'])->name('profile.email.request');
         Route::get('/profil/email/verify/{token}', [ProfileController::class, 'verifyEmail'])->name('profile.email.verify');
 
+        // Logs
         Route::get('/logs', [LogController::class, 'index'])->name('logs');
         Route::get('/logs/export', [LogController::class, 'export'])->name('logs.export');
     });
