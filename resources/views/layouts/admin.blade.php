@@ -10,6 +10,31 @@
     <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
     @vite(['resources/css/admin.css', 'resources/js/admin/app.js'])
     @stack('head')
+
+<style>
+#loading-screen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.8s ease;
+}
+.loader-spinner {
+    width: 48px; height: 48px;
+    border: 5px solid #D1FAE5;
+    border-top-color: #1B4332;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+</style>
 </head>
 <body x-data="{
     sidebarOpen: localStorage.getItem('gv_sidebar') !== 'closed',
@@ -18,7 +43,25 @@
         localStorage.setItem('gv_sidebar', this.sidebarOpen ? 'open' : 'closed');
     }
 }">
-</body>
+
+{{-- ── Loading Screen ── --}}
+<div id="loading-screen">
+    <img src="/images/favicon.svg" alt="Greenvest" style="width:64px;height:64px;margin-bottom:1rem;">
+    <p style="font-size:1.1rem;font-weight:700;color:#1B4332;margin-bottom:1.5rem;letter-spacing:1px;">GREENVEST.CO</p>
+    <div class="loader-spinner"></div>
+</div>
+
+<script>
+window.addEventListener('load', function () {
+    setTimeout(function () {
+        var loader = document.getElementById('loading-screen');
+        loader.style.opacity = '0';
+        setTimeout(function () {
+            loader.style.display = 'none';
+        }, 800);
+    }, 1500);
+});
+</script>
 
 <div class="admin-layout">
 
@@ -71,10 +114,8 @@
                 <i class="ph ph-clock-counter-clockwise"></i>
                 Logs
             </a>
-            {{-- Divider --}}
             <div style="height:1px;background:rgba(255,255,255,0.08);margin:0.5rem 0.875rem;"></div>
 
-            {{-- Logout --}}
             <form method="POST" action="{{ route('admin.logout') }}">
                 @csrf
                 <button type="submit"
@@ -106,7 +147,6 @@
                     @input.debounce.400ms="search()"
                     @keyup.enter="query && (window.location.href='/admin/artikel?search='+encodeURIComponent(query))"
                 >
-                {{-- Inline results --}}
                 <div x-show="open" x-cloak
                      style="position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid #E5E7EB;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.1);z-index:50;overflow:hidden;">
                     <template x-for="item in results" :key="item.id">
@@ -119,7 +159,7 @@
                         </a>
                     </template>
                 </div>
-            </div>          
+            </div>
 
             <div class="topbar-admin">
                 <span class="topbar-admin-name">{{ auth()->user()->name }}</span>
@@ -131,7 +171,6 @@
 
         {{-- Page Content --}}
         <main class="page-content">
-            {{-- Flash messages --}}
             @if(session('success'))
                 <div id="flash-success" style="margin-bottom:1rem;padding:0.875rem 1.25rem;background:#fff;border-left:4px solid #059669;border-radius:12px;font-size:0.875rem;font-weight:500;display:flex;align-items:center;gap:0.75rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
                     <i class="ph ph-check-circle" style="color:#059669;font-size:1.1rem;"></i>
@@ -153,7 +192,7 @@
 {{-- Toast Container --}}
 <div id="toast-container" class="toast-container"></div>
 
-{{-- FAB (new article shortcut) --}}
+{{-- FAB --}}
 @if(!request()->routeIs('admin.articles.create', 'admin.articles.edit'))
 <a href="{{ route('admin.articles.create') }}" class="fab" title="Tambah Artikel">
     <i class="ph ph-plus"></i>
@@ -161,7 +200,6 @@
 @endif
 
 <script>
-// Auto-dismiss flash
 setTimeout(() => {
     document.getElementById('flash-success')?.remove();
 }, 4000);
