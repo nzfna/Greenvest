@@ -155,8 +155,9 @@ Alpine.data('articleEditor', (initialContent = '') => ({
 
 // ── Profile Page ─────────────────────────────────────────────────
 Alpine.data('profilePage', () => ({
-    saving:    false,
-    photoFile: null,
+    saving:          false,
+    photoFile:       null,
+    deletePhotoOpen: false,
 
     async saveProfile() {
         this.saving = true;
