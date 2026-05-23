@@ -15,6 +15,7 @@
     <h1 class="page-title">Tambah Artikel</h1>
     <div style="display:flex;gap:0.625rem;">
         <a href="{{ route('admin.articles.index') }}"
+           onclick="return confirm('Yakin mau keluar? Perubahan yang belum disimpan akan hilang.')"
            style="padding:0.6875rem 1.125rem;background:#F3F4F6;color:#374151;font-size:0.875rem;font-weight:600;border-radius:10px;text-decoration:none;display:flex;align-items:center;gap:0.375rem;border:none;cursor:pointer;">
             <i class="ph ph-x"></i> Batal
         </a>
