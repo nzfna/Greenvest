@@ -200,7 +200,7 @@ function animateCounter(id, from, to, duration) {
 
 // ── Comment Form ──────────────────────────────────────────────────
 Alpine.data('commentForm', (slug) => ({
-    name: '', email: '', content: '', loading: false, success: false, error: '', errors: {},
+    name: '', email: '', content: '', loading: false, success: false, error: '', banReason: '', errors: {},
 
     async submit() {
         this.loading = true; this.error = ''; this.errors = {};
@@ -219,7 +219,11 @@ Alpine.data('commentForm', (slug) => ({
             window.literacyComment(slug); // +3% literacy
         } catch (err) {
             if (err.response?.status === 422) { this.errors = err.response.data.errors ?? {}; this.error = 'Periksa kembali input Anda.'; }
-            else if (err.response?.status === 403) { this.error = 'Anda tidak dapat mengirim komentar.'; }
+            else if (err.response?.status === 403) {
+                const data = err.response.data;
+                this.error     = data.message ?? 'Anda tidak dapat mengirim komentar.';
+                this.banReason = data.reason  ?? '';
+            }
             else { this.error = 'Terjadi kesalahan. Coba lagi.'; }
         } finally { this.loading = false; }
     },

@@ -61,10 +61,12 @@ Alpine.data('deleteModal', () => ({
 
 // ── Comment Detail Modal ─────────────────────────────────────────
 Alpine.data('commentModal', () => ({
-    open:    false,
-    comment: null,
-    reply:   '',
-    loading: false,
+    open:        false,
+    comment:     null,
+    reply:       '',
+    loading:     false,
+    showBanForm: false,
+    banReason:   '',
 
     show(data) {
         this.comment = data;
@@ -99,6 +101,24 @@ Alpine.data('commentModal', () => ({
             toast(res.data.message, 'success');
         } catch {
             toast('Gagal mengirim balasan.', 'error');
+        } finally {
+            this.loading = false;
+        }
+    },
+
+    async submitBan() {
+        if (!this.comment) return;
+        this.loading = true;
+        try {
+            const res = await axios.post(`/admin/komentar/${this.comment.id}/device-ban`, {
+                reason: this.banReason || 'Device Ban by admin',
+            });
+            toast(res.data.message, 'success');
+            this.showBanForm = false;
+            this.banReason   = '';
+            setTimeout(() => location.reload(), 800);
+        } catch {
+            toast('Gagal melakukan ban.', 'error');
         } finally {
             this.loading = false;
         }

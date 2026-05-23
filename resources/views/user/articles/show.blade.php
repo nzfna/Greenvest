@@ -72,8 +72,15 @@
                     </div>
 
                     <div x-show="error" x-cloak
-                         style="margin-bottom:1rem;padding:0.875rem;background:#FEF2F2;border-radius:10px;font-size:0.875rem;color:#B91C1C;" x-text="error">
-                    </div>
+     style="margin-bottom:1rem;padding:0.875rem;background:#FEF2F2;border-radius:10px;font-size:0.875rem;color:#B91C1C;">
+    <div style="display:flex;align-items:center;gap:0.5rem;font-weight:600;">
+        <i class="ph ph-prohibit"></i>
+        <span x-text="error"></span>
+    </div>
+    <div x-show="banReason" x-cloak style="margin-top:0.375rem;font-size:0.8125rem;">
+        Alasan: <span x-text="banReason"></span>
+    </div>
+</div>
 
                     <div style="font-size:0.9375rem;font-weight:700;color:#374151;margin-bottom:1rem;">Tinggalkan Komentar</div>
 

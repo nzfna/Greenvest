@@ -13,15 +13,17 @@ class CheckBanned
     {
         $fingerprint = $this->getFingerprint($request);
 
-        if (DeviceBan::isBanned($fingerprint)) {
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'banned'  => true,
-                    'message' => 'Anda tidak dapat mengirim komentar.',
-                ], 403);
-            }
-            return back()->with('error', 'Anda tidak dapat mengirim komentar.');
-        }
+        $ban = DeviceBan::where('device_fingerprint', $fingerprint)->first();
+if ($ban) {
+    if ($request->expectsJson()) {
+        return response()->json([
+            'banned'  => true,
+            'message' => 'Anda tidak dapat mengirim komentar karena telah di-ban.',
+            'reason'  => $ban->reason ?? 'Pelanggaran panduan komunitas',
+        ], 403);
+    }
+    return back()->with('error', 'Anda tidak dapat mengirim komentar karena telah di-ban.');
+}
 
         $request->merge(['device_fingerprint' => $fingerprint]);
 
