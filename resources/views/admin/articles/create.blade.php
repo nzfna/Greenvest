@@ -2,7 +2,7 @@
 @section('title', 'Tambah Artikel')
 
 @section('content')
-<div x-data="articleEditor('')">
+<div x-data="articleEditor({{ json_encode(old('content', '')) }})">
 
 {{-- Breadcrumb + Header --}}
 <div style="font-size:0.8125rem;color:#9CA3AF;margin-bottom:0.75rem;">
@@ -84,6 +84,7 @@
                 <div class="rich-editor" contenteditable="true"
                      x-ref="editor"
                      @input="syncContent()"
+                     x-init="$el.innerHTML = content"
                      style="min-height:380px;"></div>
             </div>
 
