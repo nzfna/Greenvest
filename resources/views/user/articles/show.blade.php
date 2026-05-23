@@ -119,36 +119,35 @@
                             <span x-show="loading">Mengirim...</span>
                         </button>
                     </div>
-                </div>
+                
 
-                {{-- Approved comments list --}}
-                @foreach($article->approvedComments as $comment)
-                <div class="comment-item">
-                    <div class="comment-avatar">{{ $comment->initials }}</div>
-                    <div class="comment-bubble">
-                        <div class="comment-bubble-header">
-                            <span class="comment-bubble-name">{{ $comment->user_name }}</span>
-                            <span class="comment-bubble-time">{{ $comment->created_at->diffForHumans() }}</span>
-                        </div>
-                        <div class="comment-bubble-text">{{ $comment->content }}</div>
-
-                        @if($comment->admin_reply)
-                        <div class="admin-reply-bubble">
-                            <div class="admin-reply-bubble-tag">
-                                <i class="ph ph-shield-check"></i> Greenvest Team
-                            </div>
-                            {{ $comment->admin_reply }}
-                        </div>
-                        @endif
+                {{-- Approved comments list (real-time polling) --}}
+<template x-for="comment in comments" :key="comment.id">
+    <div class="comment-item">
+        <div class="comment-avatar" x-text="comment.initials"></div>
+        <div class="comment-bubble">
+            <div class="comment-bubble-header">
+                <span class="comment-bubble-name" x-text="comment.user_name"></span>
+                <span class="comment-bubble-time" x-text="comment.created_at"></span>
+            </div>
+            <div class="comment-bubble-text" x-text="comment.content"></div>
+            <template x-if="comment.admin_reply">
+                <div class="admin-reply-bubble">
+                    <div class="admin-reply-bubble-tag">
+                        <i class="ph ph-shield-check"></i> Greenvest Team
                     </div>
+                    <span x-text="comment.admin_reply"></span>
                 </div>
-                @endforeach
+            </template>
+        </div>
+    </div>
+</template>
 
-                @if($article->approvedComments->isEmpty())
-                <p style="font-size:0.875rem;color:#9CA3AF;text-align:center;padding:2rem 0;">
-                    Jadilah yang pertama berkomentar!
-                </p>
-                @endif
+<p x-show="comments.length === 0"
+   style="font-size:0.875rem;color:#9CA3AF;text-align:center;padding:2rem 0;">
+    Jadilah yang pertama berkomentar!
+</p>
+</div>
             </div>
         </main>
 
