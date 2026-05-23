@@ -1150,3 +1150,50 @@ body {
 @media (max-width: 480px) {
   .articles-grid { grid-template-columns: 1fr; }
 }
+/* ── Dark Mode ─────────────────────────────────────────────── */
+body.dark {
+    background: #0f1117;
+    color: #e5e7eb;
+}
+body.dark .navbar {
+    background: #1a1d27;
+    border-bottom-color: #2d3748;
+}
+body.dark .navbar-brand { color: #D8F3DC; }
+body.dark .navbar-link { color: #9CA3AF; }
+body.dark .navbar-link:hover { color: #D8F3DC; }
+body.dark .footer {
+    background: #1a1d27;
+    border-top-color: #2d3748;
+    color: #6B7280;
+}
+body.dark .card,
+body.dark .article-card {
+    background: #1a1d27;
+    border-color: #2d3748;
+}
+body.dark .article-card:hover { background: #222536; }
+body.dark h1, body.dark h2, body.dark h3 { color: #f9fafb; }
+body.dark p { color: #9CA3AF; }
+body.dark input, body.dark textarea {
+    background: #1a1d27;
+    border-color: #2d3748;
+    color: #e5e7eb;
+}
+
+/* Toggle button */
+.dark-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.25rem;
+    color: #6B7280;
+    padding: 0.25rem;
+    border-radius: 8px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+}
+.dark-toggle:hover { color: #1B4332; background: #F3F4F6; }
+body.dark .dark-toggle { color: #D8F3DC; }
+body.dark .dark-toggle:hover { background: #2d3748; }
