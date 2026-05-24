@@ -28,6 +28,9 @@ Route::post('/artikel/{slug}/komentar', [UserCommentController::class, 'store'])
     ->middleware('check.banned')
     ->name('user.comments.store');
 
+    Route::get('/artikel/{slug}/komentar', [UserCommentController::class, 'index'])
+    ->name('user.comments.index');
+
 /*
 |--------------------------------------------------------------------------
 | ADMIN AUTH ROUTES (Guest only)

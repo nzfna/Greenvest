@@ -67,22 +67,22 @@ class CommentController extends Controller
 
 
 
-    public function deviceBan(int $id)
-    {
-        $comment = Comment::findOrFail($id);
+    public function deviceBan(Request $request, int $id)
+{
+    $comment = Comment::findOrFail($id);
 
-        $fingerprint = $comment->device_fingerprint
-            ?? hash('sha256', $comment->ip_address . '|' . $comment->user_agent);
+    $fingerprint = $comment->device_fingerprint
+        ?? hash('sha256', $comment->ip_address . '|' . $comment->user_agent);
 
-        DeviceBan::updateOrCreate(
-            ['device_fingerprint' => $fingerprint],
-            [
-                'ip_address' => $comment->ip_address,
-                'reason'     => 'Device Ban by admin',
-                'banned_at'  => now(),
-                'expires_at' => null, // permanen
-            ]
-        );
+    DeviceBan::updateOrCreate(
+        ['device_fingerprint' => $fingerprint],
+        [
+            'ip_address' => $comment->ip_address,
+            'reason'     => $request->input('reason', 'Device Ban by admin'),
+            'banned_at'  => now(),
+            'expires_at' => null,
+        ]
+    );
 
         // Update status komentar jadi rejected
         $comment->update(['status' => 'rejected']);

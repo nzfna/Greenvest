@@ -200,14 +200,30 @@ function animateCounter(id, from, to, duration) {
 
 // ── Comment Form ──────────────────────────────────────────────────
 Alpine.data('commentForm', (slug) => ({
-    name: '', email: '', content: '', loading: false, success: false, error: '', errors: {},
+    name: '', email: '', content: '', loading: false, success: false, error: '', banReason: '', errors: {},
+    comments: [],
+    pollInterval: null,
+
+    async init() {
+        await this.fetchComments();
+        this.pollInterval = setInterval(() => this.fetchComments(), 5000);
+    },
+
+    destroy() {
+        clearInterval(this.pollInterval);
+    },
+
+    async fetchComments() {
+        try {
+            const res = await axios.get(`/artikel/${slug}/komentar`);
+            this.comments = res.data.comments;
+        } catch { /* silent fail */ }
+    },
 
     async submit() {
         this.loading = true; this.error = ''; this.errors = {};
         try {
-            // Ambil device fingerprint (unik per perangkat, bukan per IP)
             const deviceFp = await getDeviceFingerprint();
-
             await axios.post(`/artikel/${slug}/komentar`, {
                 user_name:  this.name,
                 user_email: this.email,
@@ -216,14 +232,20 @@ Alpine.data('commentForm', (slug) => ({
                 _device_fp: deviceFp,
             });
             this.success = true; this.name = ''; this.email = ''; this.content = '';
-            window.literacyComment(slug); // +3% literacy
+            window.literacyComment(slug);
+            await this.fetchComments();
         } catch (err) {
             if (err.response?.status === 422) { this.errors = err.response.data.errors ?? {}; this.error = 'Periksa kembali input Anda.'; }
-            else if (err.response?.status === 403) { this.error = 'Anda tidak dapat mengirim komentar.'; }
+            else if (err.response?.status === 403) {
+                const data = err.response.data;
+                this.error     = data.message ?? 'Anda tidak dapat mengirim komentar.';
+                this.banReason = data.reason  ?? '';
+            }
             else { this.error = 'Terjadi kesalahan. Coba lagi.'; }
         } finally { this.loading = false; }
     },
 }));
+        
 
 // ── Share bar ─────────────────────────────────────────────────────
 Alpine.data('shareBar', () => ({
