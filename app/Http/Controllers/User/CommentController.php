@@ -9,7 +9,25 @@ use App\Models\Comment;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
+
 {
+    public function index(string $slug)
+{
+    $article  = Article::where('slug', $slug)->published()->firstOrFail();
+    $comments = $article->approvedComments()
+        ->orderBy('created_at', 'asc')
+        ->get()
+        ->map(fn($c) => [
+            'id'          => $c->id,
+            'user_name'   => $c->user_name,
+            'initials'    => $c->initials,
+            'content'     => $c->content,
+            'admin_reply' => $c->admin_reply,
+            'created_at'  => $c->created_at->diffForHumans(),
+        ]);
+
+    return response()->json(['comments' => $comments]);
+}
     public function store(Request $request, string $slug)
     {
         $request->validate([

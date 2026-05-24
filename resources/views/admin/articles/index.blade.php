@@ -4,6 +4,27 @@
 @section('content')
 <div x-data="deleteModal()">
 
+{{-- Loading Screen --}}
+<div id="page-loading" style="
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    background:rgba(255,255,255,0.85);
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    z-index:100;transition:opacity 0.5s ease;">
+    <img src="/images/favicon.svg" style="width:52px;height:52px;margin-bottom:1rem;">
+    <p style="font-size:1rem;font-weight:700;color:#1B4332;margin-bottom:1.25rem;">GREENVEST.CO</p>
+    <div style="width:40px;height:40px;border:4px solid #D1FAE5;border-top-color:#1B4332;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+</div>
+<style>@keyframes spin { to { transform:rotate(360deg); } }</style>
+<script>
+window.addEventListener('load', function() {
+    setTimeout(function() {
+        var el = document.getElementById('page-loading');
+        if(el) { el.style.opacity='0'; setTimeout(function(){ el.style.display='none'; },500); }
+    }, 800);
+});
+</script>
+
 {{-- Header --}}
 <div style="margin-bottom:0.25rem;" class="section-label">ARSIP EKOLOGI</div>
 <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;gap:1rem;flex-wrap:wrap;">

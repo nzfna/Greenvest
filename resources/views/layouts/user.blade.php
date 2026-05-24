@@ -76,6 +76,12 @@ class="navbar-link {{ request()->routeIs('user.simulation*') ? 'active' : '' }}"
                Simulasi
 </a>
 </div>
+
+{{-- ── Dark Mode Toggle ── --}}
+<button class="dark-toggle" onclick="toggleDark()" title="Toggle Dark Mode" id="dark-btn">
+    <i class="ph ph-moon" id="dark-icon"></i>
+</button>
+
 <div class="navbar-search" x-data="navSearch()">
 <button class="navbar-search-btn" @click="toggle()" aria-label="Cari">
 <i class="ph ph-magnifying-glass"></i>
@@ -113,6 +119,28 @@ style="padding:0.6875rem;background:#F3F4F6;border:none;border-radius:10px;curso
 <footer class="footer">
 <p>&copy; {{ date('Y') }} Greenvest.co — Ekosistem Edukasi Investasi Hijau Indonesia</p>
 </footer>
+
+<script>
+function toggleDark() {
+    const body = document.body;
+    const icon = document.getElementById('dark-icon');
+    body.classList.toggle('dark');
+    const isDark = body.classList.contains('dark');
+    localStorage.setItem('gv_dark', isDark ? '1' : '0');
+    icon.className = isDark ? 'ph ph-sun' : 'ph ph-moon';
+}
+
+(function() {
+    const isDark = localStorage.getItem('gv_dark') === '1';
+    if (isDark) {
+        document.body.classList.add('dark');
+        document.addEventListener('DOMContentLoaded', function() {
+            const icon = document.getElementById('dark-icon');
+            if (icon) icon.className = 'ph ph-sun';
+        });
+    }
+})();
+</script>
 @stack('scripts')
 </body>
 </html>

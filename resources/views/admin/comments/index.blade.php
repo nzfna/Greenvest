@@ -4,6 +4,27 @@
 @section('content')
 <div x-data="commentModal()">
 
+{{-- Loading Screen --}}
+<div id="page-loading" style="
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    background:rgba(255,255,255,0.85);
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    z-index:100;transition:opacity 0.5s ease;">
+    <img src="/images/favicon.svg" style="width:52px;height:52px;margin-bottom:1rem;">
+    <p style="font-size:1rem;font-weight:700;color:#1B4332;margin-bottom:1.25rem;">GREENVEST.CO</p>
+    <div style="width:40px;height:40px;border:4px solid #D1FAE5;border-top-color:#1B4332;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+</div>
+<style>@keyframes spin { to { transform:rotate(360deg); } }</style>
+<script>
+window.addEventListener('load', function() {
+    setTimeout(function() {
+        var el = document.getElementById('page-loading');
+        if(el) { el.style.opacity='0'; setTimeout(function(){ el.style.display='none'; },500); }
+    }, 800);
+});
+</script>
+
 <div style="margin-bottom:0.25rem;" class="section-label">EDITORIAL CONTROLS</div>
 <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:1rem;">
     <div>
@@ -194,17 +215,45 @@
                 <i class="ph ph-x-circle"></i> Reject
             </button>
             <div style="margin-left:auto;display:flex;gap:0.5rem;">
-                <button class="btn-text-action danger" @click="doAction('device-ban')" :disabled="loading"
-                        style="background:#FEF2F2;color:#EF4444;border:1px solid #FECACA;border-radius:8px;padding:0.375rem 0.75rem;">
-                    <i class="ph ph-prohibit"></i> Device Ban
-                </button>
-                <button class="btn-text-action" @click="doAction('undevice-ban')" :disabled="loading"
-                        style="background:#F0FDF4;color:#16A34A;border:1px solid #BBF7D0;border-radius:8px;padding:0.375rem 0.75rem;">
-                    <i class="ph ph-shield-check"></i> Undevice Ban
-                </button>
+                <button class="btn-text-action danger" @click="showBanForm = !showBanForm" :disabled="loading"
+        style="background:#FEF2F2;color:#EF4444;border:1px solid #FECACA;border-radius:8px;padding:0.375rem 0.75rem;">
+    <i class="ph ph-prohibit"></i> Device Ban
+</button>
+<button class="btn-text-action" @click="doAction('undevice-ban')" :disabled="loading"
+        style="background:#F0FDF4;color:#16A34A;border:1px solid #BBF7D0;border-radius:8px;padding:0.375rem 0.75rem;">
+    <i class="ph ph-shield-check"></i> Undevice Ban
+</button>
             </div>
         </div>
 
+        {{-- Ban Reason Form --}}
+        <div x-show="showBanForm" x-cloak
+             style="margin:0 1.5rem 1rem;padding:1rem;background:#FEF2F2;border:1px solid #FECACA;border-radius:10px;">
+    <label style="display:block;font-size:0.75rem;font-weight:600;color:#991B1B;margin-bottom:0.5rem;">ALASAN BAN</label>
+    <div style="display:flex;gap:0.375rem;flex-wrap:wrap;margin-bottom:0.625rem;">
+        <button type="button" @click="banReason = 'Spam'"
+                style="padding:0.25rem 0.625rem;background:#fff;border:1px solid #FECACA;border-radius:999px;font-size:0.75rem;color:#991B1B;cursor:pointer;">
+            Spam
+        </button>
+        <button type="button" @click="banReason = 'Toxic / Ujaran Kebencian'"
+                style="padding:0.25rem 0.625rem;background:#fff;border:1px solid #FECACA;border-radius:999px;font-size:0.75rem;color:#991B1B;cursor:pointer;">
+            Toxic
+        </button>
+        <button type="button" @click="banReason = 'Konten Tidak Pantas'"
+                style="padding:0.25rem 0.625rem;background:#fff;border:1px solid #FECACA;border-radius:999px;font-size:0.75rem;color:#991B1B;cursor:pointer;">
+            Konten Tidak Pantas
+        </button>
+    </div>
+    <textarea x-model="banReason" rows="2" placeholder="Tulis alasan ban..."
+              style="width:100%;padding:0.625rem;background:#fff;border:1px solid #FECACA;border-radius:8px;font-size:0.875rem;outline:none;resize:none;box-sizing:border-box;"></textarea>
+    <div style="display:flex;justify-content:flex-end;margin-top:0.625rem;">
+        <button type="button" @click="submitBan()" :disabled="loading"
+                style="padding:0.5rem 1.25rem;background:#EF4444;color:#fff;font-size:0.875rem;font-weight:700;border:none;border-radius:8px;cursor:pointer;">
+            <i class="ph ph-prohibit"></i> Simpan & Ban
+        </button>
+    </div>
+</div>
+            
         {{-- Comment Body --}}
         <div class="comment-body">
             <div class="commenter-info">

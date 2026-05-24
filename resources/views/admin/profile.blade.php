@@ -27,9 +27,9 @@
                     <i class="ph ph-pencil"></i> Ubah Foto Profil
                     <input type="file" class="sr-only" accept="image/*" @change="uploadPhoto($event)">
                 </label>
-                <button class="btn-upload-delete" type="button" @click="deletePhoto()">
-                    <i class="ph ph-trash"></i> Hapus
-                </button>
+                <button class="btn-upload-delete" type="button" @click="deletePhotoOpen = true">
+    <i class="ph ph-trash"></i> Hapus
+</button>
             </div>
         </div>
 
@@ -121,5 +121,21 @@
         <span x-show="!saving">SIMPAN PERUBAHAN</span>
         <span x-show="saving">Menyimpan...</span>
     </button>
+    </div>
+
+    {{-- Delete Photo Modal --}}
+<div x-show="deletePhotoOpen" x-cloak class="modal-backdrop" @click.self="deletePhotoOpen = false">
+    <div class="modal-card" @click.stop>
+        <div class="modal-icon-wrap">
+            <i class="ph ph-warning" style="font-size:1.75rem;color:#EF4444;"></i>
+        </div>
+        <h2 class="modal-title">Hapus Foto Profil?</h2>
+        <p class="modal-desc">Apakah kamu yakin ingin menghapus foto profil ini? Foto akan diganti dengan avatar default.</p>
+        <div class="modal-actions">
+            <button class="btn-cancel" @click="deletePhotoOpen = false">BATAL</button>
+            <button class="btn-danger" @click="deletePhotoOpen = false; deletePhoto()">YA, HAPUS</button>
+        </div>
+    </div>
+</div>
 </div>
 @endsection
