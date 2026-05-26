@@ -2,7 +2,7 @@
 @section('title', 'Sunting Artikel')
 
 @section('content')
-<div x-data="articleEditor({{ json_encode($article->content) }})">
+<div x-data="articleEditor({{ json_encode($article->content) }}, {{ json_encode(old('title', $article->title)) }})">
 
 <div style="font-size:0.8125rem;color:#9CA3AF;margin-bottom:0.75rem;">
     <a href="{{ route('admin.articles.index') }}" style="color:#6B7280;text-decoration:none;">KELOLA ARTIKEL</a>
