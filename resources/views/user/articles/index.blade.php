@@ -13,7 +13,7 @@
         <div class="category-tabs">
             <a href="{{ route('user.articles.index') }}"
                class="category-tab {{ !request('category') ? 'active' : '' }}">
-               General
+               All
             </a>
             @foreach($categories as $cat)
             <a href="{{ route('user.articles.index', ['category' => $cat->slug]) }}"
