@@ -108,25 +108,63 @@ class ProfileController extends Controller
             'email.unique' => 'Email sudah digunakan oleh akun lain.',
         ]);
 
-        $user  = auth()->user();
-        $token = Str::random(64);
+        $user = auth()->user();
+        $otp  = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
+        // Invalidate token lama
         EmailVerification::where('user_id', $user->id)->whereNull('used_at')->update(['used_at' => now()]);
 
         EmailVerification::create([
             'user_id'    => $user->id,
             'email'      => $request->email,
-            'token'      => $token,
-            'expires_at' => now()->addHours(24),
+            'token'      => $otp,
+            'expires_at' => now()->addMinutes(30),
         ]);
 
-        $verifyUrl = route('admin.profile.email.verify', $token);
-        \Log::info("Verify email URL untuk {$user->email} → {$request->email}: {$verifyUrl}");
+        \Log::info("OTP Ganti Email untuk {$user->email} → {$request->email}: {$otp}");
 
         return response()->json([
-            'success'    => true,
-            'message'    => 'Email verifikasi telah dikirim ke ' . $request->email,
-            'verify_url' => config('app.debug') ? $verifyUrl : null,
+            'success' => true,
+            'message' => 'Kode OTP telah dikirim. Cek laravel.log untuk melihat kodenya.',
+        ]);
+    }
+
+    public function verifyEmailOtp(Request $request)
+    {
+        $request->validate([
+            'otp' => ['required', 'digits:6'],
+        ], [
+            'otp.required' => 'Kode OTP wajib diisi.',
+            'otp.digits'   => 'Kode OTP harus 6 digit angka.',
+        ]);
+
+        $user = auth()->user();
+
+        $verification = EmailVerification::where('user_id', $user->id)
+            ->where('token', $request->otp)
+            ->whereNull('used_at')
+            ->where('expires_at', '>', now())
+            ->latest()
+            ->first();
+
+        if (! $verification) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kode OTP tidak valid atau sudah kadaluarsa.',
+            ], 422);
+        }
+
+        $newEmail = $verification->email;
+        $user->update(['email' => $newEmail]);
+        $verification->markAsUsed();
+
+        ActivityLogService::log('verify_email', 'user', $user->id,
+            "Verifikasi OTP email baru: {$newEmail}");
+
+        return response()->json([
+            'success' => true,
+            'message' => "Email berhasil diubah ke {$newEmail}.",
+            'email'   => $newEmail,
         ]);
     }
 

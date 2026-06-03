@@ -51,6 +51,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/verifikasi', [AuthController::class, 'verifyCode']);
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/reset-password', [AuthController::class, 'showResetPassword'])->name('reset-password');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
     /*
     |--------------------------------------------------------------------------
@@ -87,6 +89,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/profil/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
         Route::delete('/profil/photo', [ProfileController::class, 'deletePhoto'])->name('profile.photo.delete');
         Route::post('/profil/email/request', [ProfileController::class, 'requestEmailChange'])->name('profile.email.request');
+        Route::post('/profil/email/verify-otp', [ProfileController::class, 'verifyEmailOtp'])->name('profile.email.verify-otp');
         Route::get('/profil/email/verify/{token}', [ProfileController::class, 'verifyEmail'])->name('profile.email.verify');
 
         // Logs

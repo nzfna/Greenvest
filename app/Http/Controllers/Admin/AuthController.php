@@ -167,11 +167,55 @@ class AuthController extends Controller
         if ($request->expectsJson()) {
             return response()->json([
                 'success'  => true,
-                'redirect' => route('admin.dashboard'),
+                'redirect' => route('admin.reset-password'),
             ]);
         }
 
-        return redirect()->route('admin.dashboard')
+        return redirect()->route('admin.reset-password')
             ->with('success', 'Verifikasi berhasil. Silakan ganti password Anda.');
+    }
+
+    // ── Reset Password ─────────────────────────────────────────────────────────
+
+    public function showResetPassword()
+    {
+        if (! session('password_reset_verified')) {
+            return redirect()->route('admin.login');
+        }
+
+        return view('admin.auth.reset-password');
+    }
+
+    public function resetPassword(Request $request)
+    {
+        if (! session('password_reset_verified')) {
+            return redirect()->route('admin.login');
+        }
+
+        $request->validate([
+            'password'              => ['required', 'string', 'min:8', 'confirmed'],
+            'password_confirmation' => ['required'],
+        ], [
+            'password.required'    => 'Password baru wajib diisi.',
+            'password.min'         => 'Password minimal 8 karakter.',
+            'password.confirmed'   => 'Konfirmasi password tidak cocok.',
+        ]);
+
+        $user = auth()->user();
+        $user->update(['password' => \Hash::make($request->password)]);
+
+        session()->forget('password_reset_verified');
+
+        ActivityLogService::log('change_password', 'user', $user->id, 'Reset password via OTP');
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success'  => true,
+                'redirect' => route('admin.login'),
+            ]);
+        }
+
+        return redirect()->route('admin.login')
+            ->with('success', 'Password berhasil diubah.');
     }
 }

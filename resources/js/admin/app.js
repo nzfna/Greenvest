@@ -253,9 +253,32 @@ Alpine.data('profilePage', () => ({
         try {
             const res = await axios.post('/admin/profil/email/request', { email });
             toast(res.data.message, 'success');
+            // Tampilkan form OTP
+            const otpSection = document.getElementById('email-otp-section');
+            if (otpSection) otpSection.style.display = 'block';
         } catch (err) {
             const errors = err.response?.data?.errors?.email?.[0];
             toast(errors ?? 'Terjadi kesalahan.', 'error');
+        }
+    },
+
+    async verifyEmailOtp() {
+        const otp = document.getElementById('email-otp-input')?.value;
+        if (!otp) return;
+        try {
+            const res = await axios.post('/admin/profil/email/verify-otp', { otp });
+            toast(res.data.message, 'success');
+            // Update email yang tampil di halaman
+            const emailDisplay = document.getElementById('admin-email-display');
+            if (emailDisplay) emailDisplay.value = res.data.email;
+            // Reset form
+            document.getElementById('email-otp-section').style.display = 'none';
+            document.getElementById('new-email').value = '';
+            document.getElementById('email-otp-input').value = '';
+            this.showEmailChange = false;
+        } catch (err) {
+            const msg = err.response?.data?.message ?? 'Kode OTP tidak valid.';
+            toast(msg, 'error');
         }
     },
 }));
