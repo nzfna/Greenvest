@@ -82,8 +82,7 @@
     </div>
 </div>
 
-                    <div style="font-size:0.9375rem;font-weight:700;color:#374151;margin-bottom:1rem;">Tinggalkan Komentar</div>
-
+<h3 class="comments-title" style="font-size:0.9375rem;font-weight:700;margin-bottom:1rem;">Tinggalkan Komentar</h3>
                     <div class="comment-form-row">
                         <div>
                             <label style="display:block;font-size:0.75rem;font-weight:600;color:#6B7280;margin-bottom:0.375rem;">Nama Panggilan *</label>
