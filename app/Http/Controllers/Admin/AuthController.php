@@ -18,6 +18,10 @@ class AuthController extends Controller
 
     public function showLogin()
     {
+        if (auth()->check()) {
+            return redirect()->route('admin.dashboard');
+        }
+
         return view('admin.auth.login');
     }
 
@@ -72,6 +76,10 @@ class AuthController extends Controller
 
     public function showForgot()
     {
+        if (auth()->check()) {
+            return redirect()->route('admin.dashboard');
+        }
+
         return view('admin.auth.forgot-password');
     }
 
@@ -121,9 +129,14 @@ class AuthController extends Controller
 
     public function showVerify()
     {
+        if (auth()->check() && ! session('password_reset_verified')) {
+            return redirect()->route('admin.dashboard');
+        }
+
         if (! session('reset_email')) {
             return redirect()->route('admin.forgot');
         }
+
         return view('admin.auth.verify');
     }
 
@@ -211,11 +224,11 @@ class AuthController extends Controller
         if ($request->expectsJson()) {
             return response()->json([
                 'success'  => true,
-                'redirect' => route('admin.login'),
+                'redirect' => route('admin.dashboard'),
             ]);
         }
 
-        return redirect()->route('admin.login')
+        return redirect()->route('admin.dashboard')
             ->with('success', 'Password berhasil diubah.');
     }
 }
