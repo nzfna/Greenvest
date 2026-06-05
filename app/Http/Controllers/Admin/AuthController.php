@@ -116,8 +116,6 @@ class AuthController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Kode verifikasi telah dikirim ke email Anda.',
-                // Only expose in local/testing:
-                'otp_hint' => config('app.debug') ? $token : null,
             ]);
         }
 
@@ -129,10 +127,6 @@ class AuthController extends Controller
 
     public function showVerify()
     {
-        if (auth()->check() && ! session('password_reset_verified')) {
-            return redirect()->route('admin.dashboard');
-        }
-
         if (! session('reset_email')) {
             return redirect()->route('admin.forgot');
         }
@@ -221,14 +215,18 @@ class AuthController extends Controller
 
         ActivityLogService::log('change_password', 'user', $user->id, 'Reset password via OTP');
 
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
         if ($request->expectsJson()) {
             return response()->json([
                 'success'  => true,
-                'redirect' => route('admin.dashboard'),
+                'redirect' => route('admin.login'),
             ]);
         }
 
-        return redirect()->route('admin.dashboard')
-            ->with('success', 'Password berhasil diubah.');
+        return redirect()->route('admin.login')
+            ->with('success', 'Password berhasil diubah. Silakan login dengan password baru.');
     }
 }
